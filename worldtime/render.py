@@ -342,8 +342,8 @@ def render(
         scale = sc
         base = Image.open(base_path).convert("RGBA")  # the 1400x1050 calibration frame
         if desaturate:  # grayscale the blue artwork → a black-and-white map,
-            # then push contrast to 150% so the desaturated land/ocean stay distinct.
-            gray = ImageEnhance.Contrast(ImageOps.grayscale(base)).enhance(1.5)
+            # then double the contrast so the desaturated land/ocean stay distinct.
+            gray = ImageEnhance.Contrast(ImageOps.grayscale(base)).enhance(2.0)
             base = gray.convert("RGBA")
         scaled = base.resize((round(geo.REF_W * sc), round(geo.REF_H * sc)), Image.LANCZOS)
         canvas = scaled.crop((round(cx), round(cy), round(cx) + out_w, round(cy) + out_h))
