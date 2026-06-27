@@ -261,9 +261,9 @@ def _rect_overlap(a, b):
 def _place_labels(items, obstacles, bounds, scale):
     """Assign each label a non-overlapping box around its dot (right/left/above/below).
 
-    Greedy: home first (keeps the right-side preference), then left-to-right. Each label
-    picks the candidate side with the least overlap against obstacles (dots, logo,
-    screen edges) and already-placed labels.
+    Greedy: home first, then left-to-right. Each label picks the candidate side with the
+    least overlap against obstacles (dots, logo, screen edges) and already-placed labels.
+    The home label prefers the LEFT of its dot (others prefer the right).
     """
     gap = round(6 * scale)
     placed = list(obstacles)
@@ -271,9 +271,11 @@ def _place_labels(items, obstacles, bounds, scale):
     for i in order:
         it = items[i]
         px, py, w, h, g = it["px"], it["py"], it["w"], it["h"], it["dotr"] + gap
+        right = (px + g, py - h / 2)
+        left = (px - g - w, py - h / 2)
         candidates = [
-            (px + g, py - h / 2),       # right
-            (px - g - w, py - h / 2),   # left
+            left if it["is_home"] else right,   # home prefers left, others right
+            right if it["is_home"] else left,
             (px - w / 2, py + g),       # below
             (px - w / 2, py - g - h),   # above
             (px + g, py + g),           # below-right
