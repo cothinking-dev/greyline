@@ -1,0 +1,24 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="python-magic" />
+          <option value="pymupdf" />
+          <option value="pdfplumber" />
+          <option value="pillow" />
+          <option value="img2pdf" />
+          <option value="pytesseract" />
+          <option value="opencv-python-headless" />
+          <option value="ImageHash" />
+          <option value="dateparser" />
+          <option value="rapidfuzz" />
+          <option value="pycountry" />
+          <option value="PassportEye" />
+          <option value="lightgbm" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

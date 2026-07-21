@@ -20,7 +20,7 @@ effectively free on battery.
 ```
 systemd timer (*:*:00) ─▶ greyline (renders in well under a second, then exits)
       render per output (Pillow): map + clocks + terminator
-      └─▶ set wallpaper via the detected backend (sway/swww/hyprpaper/feh)
+      └─▶ set wallpaper via the detected backend (sway/swww/hyprpaper/gnome/feh)
 ```
 
 ## Features
@@ -34,9 +34,10 @@ systemd timer (*:*:00) ─▶ greyline (renders in well under a second, then exi
 - **Vector map** drawn from public-domain **Natural Earth** data — crisp at any
   resolution, fully themeable (`dark`, `blue`, or custom), with honest zig-zag timezone
   boundaries, a green GMT column, and a red International Date Line.
-- **Any resolution / multi-monitor / HiDPI** — each output rendered at native pixels.
+- **Any resolution / multi-monitor / HiDPI** — each output rendered at native pixels
+  (GNOME uses one shared image).
 - **Swappable corner logo** — ships with Tux; point `logo_path` at your own PNG.
-- **Pluggable backends**, auto-detected: `sway`, `swww`, `hyprpaper`, `x11` (feh/xwallpaper).
+- **Pluggable backends**, auto-detected: `sway`, `swww`, `hyprpaper`, `gnome`, `x11` (feh/xwallpaper).
 
 | `blue` theme + Tux | minimal (no logo, 12h) |
 |---|---|
@@ -55,7 +56,7 @@ imports = [ inputs.greyline.homeManagerModules.default ];
 
 services.greyline = {
   enable = true;
-  backend = "sway";              # or "auto" / "swww" / "hyprpaper" / "x11"
+  backend = "sway";              # or "auto" / "swww" / "hyprpaper" / "gnome" / "x11"
   fontFamily = "Aporetic Sans";  # resolved via fontconfig
   settings = {
     theme = "dark";
@@ -71,6 +72,10 @@ services.greyline = {
   };
 };
 ```
+
+For GNOME, set `backend = "gnome"`. It updates both the light and dark GNOME
+background settings through `gsettings`; GNOME scales its one shared 1920×1080
+image rather than exposing native per-monitor sizes.
 
 Try it without installing:
 
@@ -107,7 +112,7 @@ optional `label_side`).
 greyline                 # render all outputs and apply (what the timer runs)
 greyline --list-outputs  # show detected backend + outputs
 greyline --out wt.png --res 1920x1200   # render a PNG, no backend needed
-greyline --backend swww  # force a backend
+greyline --backend gnome # force a backend
 ```
 
 ## How it works

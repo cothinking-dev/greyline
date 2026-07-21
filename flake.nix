@@ -22,10 +22,10 @@
           src = ./.;
           build-system = [ pkgs.python3Packages.setuptools ];
           dependencies = [ pkgs.python3Packages.pillow ];
-          # fc-match (font resolution) is always needed; the compositor IPC tools
-          # (swaymsg/swww/hyprctl/feh) come from the session PATH or the HM module.
+          # fc-match (font resolution) and gsettings (GNOME backgrounds) are always
+          # available; compositor IPC tools come from the session PATH or HM module.
           nativeBuildInputs = [ pkgs.makeWrapper ];
-          makeWrapperArgs = [ "--prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.fontconfig ]}" ];
+          makeWrapperArgs = [ "--prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.fontconfig pkgs.glib ]}" ];
           nativeCheckInputs = [ pkgs.python3Packages.pytestCheckHook ];
           pythonImportsCheck = [ "worldtime" ];
           doCheck = true;

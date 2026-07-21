@@ -8,6 +8,11 @@ build/
 *.egg-info/
 .agent-shell/
 
+# Generated Graphify artifacts.
+graphify-out/
+.graphify_*
+AGENTS.md
+
 # Upstream source downloads kept locally for reference, not part of the repo.
 *.zip
 

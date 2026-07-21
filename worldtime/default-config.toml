@@ -2,7 +2,7 @@
 # User config at ~/.config/greyline/config.toml is merged over this
 # (top-level keys override; a user [[city]] list replaces this one entirely).
 
-backend = "auto"            # auto | sway | swww | hyprpaper | x11 (feh/xwallpaper)
+backend = "auto"            # auto | sway | swww | hyprpaper | gnome | x11 (feh/xwallpaper)
 map_style = "vector"        # vector (scalable, themeable) | raster (needs your own map art, see NOTICE)
 theme = "dark"              # dark | blue
 format = "24h"              # 24h | 12h

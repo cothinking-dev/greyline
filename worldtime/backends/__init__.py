@@ -10,7 +10,7 @@ Auto-detection order favours the most specific compositor IPC first.
 import importlib
 
 # (module name, env hint) — checked in order by detect().
-_ORDER = ["sway", "swww", "hyprpaper", "x11"]
+_ORDER = ["sway", "swww", "hyprpaper", "gnome", "x11"]
 
 
 def get(name):
@@ -35,7 +35,7 @@ def resolve(name="auto"):
         if not name:
             raise RuntimeError(
                 "no supported wallpaper backend detected "
-                "(sway/swww/hyprpaper/feh); set backend explicitly"
+                "(sway/swww/hyprpaper/gnome/feh/xwallpaper); set backend explicitly"
             )
     mod = get(name)
     if not mod.available():

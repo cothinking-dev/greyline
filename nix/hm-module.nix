@@ -16,6 +16,7 @@ let
   cfg = config.services.greyline;
   tomlFormat = pkgs.formats.toml { };
   useSwww = cfg.backend == "swww";
+  useGnome = cfg.backend == "gnome";
   # The daemon binary is "<mainProgram>-daemon" — works whether the package ships
   # swww-daemon or awww-daemon (some nixpkgs revisions rename it).
   swwwDaemon = "${lib.getExe cfg.swwwPackage}-daemon";
@@ -43,6 +44,7 @@ in
         "sway"
         "swww"
         "hyprpaper"
+        "gnome"
         "x11"
       ];
       default = "auto";
@@ -57,18 +59,18 @@ in
 
     target = lib.mkOption {
       type = lib.types.str;
-      default = "sway-session.target";
+      default = "graphical-session.target";
       description = "Graphical-session target the service binds to (so it renders at login).";
     };
 
     extraPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
-      default = if useSwww then [ cfg.swwwPackage ] else [ pkgs.sway ];
-      defaultText = lib.literalExpression "[ pkgs.sway ] (or [ swwwPackage ] when backend = swww)";
+      default = if useSwww then [ cfg.swwwPackage ] else if useGnome then [ ] else [ pkgs.sway ];
+      defaultText = lib.literalExpression "[ pkgs.sway ] (or [ swwwPackage ] for swww; no extra package for gnome)";
       description = ''
         Runtime tools placed on the service PATH (e.g. the compositor's IPC client:
-        swaymsg from sway, or swww / hyprland). fontconfig is always added.
-        Hyprland users: set this to [ pkgs.hyprland ].
+        swaymsg from sway, or swww / hyprland). fontconfig and glib (gsettings)
+        are always added. Hyprland users: set this to [ pkgs.hyprland ].
       '';
     };
 
@@ -136,7 +138,7 @@ in
       Service = {
         Type = "oneshot";
         Environment = [
-          "PATH=${lib.makeBinPath (cfg.extraPackages ++ [ pkgs.fontconfig ])}:/run/current-system/sw/bin"
+          "PATH=${lib.makeBinPath (cfg.extraPackages ++ [ pkgs.fontconfig pkgs.glib ])}:/run/current-system/sw/bin"
         ];
         ExecStart = ''${cfg.package}/bin/greyline --backend ${cfg.backend} --font-family "${cfg.fontFamily}"'';
       };
