@@ -137,26 +137,28 @@ def _raster_projection(out_w, out_h, anchor):
     return proj, (sc, cx, cy)
 
 
-# Vector-map framing. Plain equirectangular over the FULL globe so nothing is cropped —
-# the raster's tighter ~333deg window cut off the mid-Pacific (Alaska, Hawaii, the
-# Aleutians). Latitude uses the raster art's px-per-degree ratio (|BY|/|AX|), so
-# continents keep their familiar (slightly tall) shape rather than the squashed look of a
-# 1:1 equirectangular. Centred west of Greenwich so the seam falls in the empty Bering/
-# Pacific and the Americas (incl. Alaska) sit comfortably inside the left edge.
+# Vector-map framing. Use cover scaling so extreme aspect ratios fill the display without
+# distorting the map; portrait screens necessarily crop longitude. Latitude uses the raster
+# art's px-per-degree ratio (|BY|/|AX|), so continents keep their familiar (slightly tall)
+# shape rather than the squashed look of a 1:1 equirectangular. Centred west of Greenwich so
+# the seam falls in the empty Bering/Pacific and the Americas (incl. Alaska) sit comfortably
+# inside the left edge.
 VECTOR_LON_CENTER = 12.0
 VECTOR_LAT_CENTER = 0.0  # equator-centred → poles at the top/bottom edges (pole-to-pole on a 16:10 panel)
 
 
 def _vector_projection(out_w, out_h):
-    ppd_lon = out_w / 360.0
-    ppd_lat = ppd_lon * (abs(geo.BY) / abs(geo.AX))
+    lat_ratio = abs(geo.BY) / abs(geo.AX)
+    # Use the larger requirement so neither dimension leaves empty bands.
+    ppd_lon = max(out_w / 360.0, out_h / (180.0 * lat_ratio))
+    ppd_lat = ppd_lon * lat_ratio
     cx, cy = out_w / 2.0, out_h / 2.0
     return Projection(
         to_px=lambda lon, lat: (cx + (lon - VECTOR_LON_CENTER) * ppd_lon,
                                 cy + (VECTOR_LAT_CENTER - lat) * ppd_lat),
         x_to_lon=lambda x: VECTOR_LON_CENTER + (x - cx) / ppd_lon,
         lat_to_y=lambda lat: cy + (VECTOR_LAT_CENTER - lat) * ppd_lat,
-        scale=out_w / geo.REF_W,
+        scale=max(out_w / geo.REF_W, out_h / geo.REF_H),
     )
 
 

@@ -25,3 +25,9 @@ def test_render_returns_rgb_at_size(style):
 def test_unknown_theme_falls_back():
     img = render.render(CITIES, dt=DT, out_size=(320, 200), theme="does-not-exist")
     assert img.size == (320, 200)
+
+
+def test_vector_projection_covers_portrait_output():
+    proj = render._vector_projection(300, 480)
+    assert proj.lat_to_y(90) <= 0
+    assert proj.lat_to_y(-90) >= 480

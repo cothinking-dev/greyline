@@ -1,6 +1,6 @@
-"""GNOME backend — set the shared desktop background through gsettings.
+"""GNOME backend — set one desktop-wide background through gsettings.
 
-GNOME exposes one wallpaper setting rather than per-output geometry.  The two
+GNOME exposes one wallpaper setting rather than per-output geometry. The two
 output names alternate each minute so GNOME reloads the newly rendered PNG
 instead of reusing a cached file at the same URI.
 """
@@ -24,7 +24,7 @@ def available():
 
 
 def outputs():
-    # GNOME scales one shared background rather than exposing output geometry.
+    # GNOME scales one shared image rather than exposing output geometry.
     # Alternate paths because replacing an image at the same URI may be cached.
     return [{
         "name": f"gnome-{int(time.time() // 60) % 2}",
@@ -36,6 +36,15 @@ def outputs():
 
 def apply(name, png_path):
     uri = Path(png_path).resolve().as_uri()
+    # Zoom applies the shared source independently to each GNOME display.
+    subprocess.run(
+        [
+            "gsettings", "set", "org.gnome.desktop.background", "picture-options", "zoom"
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
     for key in ("picture-uri", "picture-uri-dark"):
         subprocess.run(
             ["gsettings", "set", "org.gnome.desktop.background", key, uri],

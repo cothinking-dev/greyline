@@ -35,7 +35,7 @@ systemd timer (*:*:00) ─▶ greyline (renders in well under a second, then exi
   resolution, fully themeable (`dark`, `blue`, or custom), with honest zig-zag timezone
   boundaries, a green GMT column, and a red International Date Line.
 - **Any resolution / multi-monitor / HiDPI** — each output rendered at native pixels
-  (GNOME uses one shared image).
+  (GNOME uses one shared virtual-desktop image).
 - **Swappable corner logo** — ships with Tux; point `logo_path` at your own PNG.
 - **Pluggable backends**, auto-detected: `sway`, `swww`, `hyprpaper`, `gnome`, `x11` (feh/xwallpaper).
 
