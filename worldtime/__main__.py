@@ -68,7 +68,11 @@ def main(argv=None):
         return 0
 
     backend_name = args.backend or cfg.get("backend", "auto")
-    name, mod = backends.resolve(backend_name)
+    try:
+        name, mod = backends.resolve(backend_name)
+    except RuntimeError as e:  # no compositor/backend detected — report cleanly, no traceback
+        print(e, file=sys.stderr)
+        return 1
     outs = mod.outputs()
     if args.list_outputs:
         print(f"backend: {name}")

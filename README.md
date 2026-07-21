@@ -1,5 +1,8 @@
 # greyline
 
+[![CI](https://github.com/cothinking-dev/greyline/actions/workflows/ci.yml/badge.svg)](https://github.com/cothinking-dev/greyline/actions/workflows/ci.yml)
+[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](LICENSE)
+
 A live world-time desktop wallpaper for Wayland/X11 — a world map with clocks for
 your cities, your home city highlighted, and a day/night terminator that tracks the
 sun. A modern recreation of the classic IBM/ThinkPad **"World Time"** Active Desktop.
@@ -8,12 +11,14 @@ sun. A modern recreation of the classic IBM/ThinkPad **"World Time"** Active Des
 
 ![greyline — dark theme](docs/screenshots/hero.png)
 
+<sub>Shown with the optional ThinkPad wordmark (a user-supplied logo — see [Licensing](#licensing--credits)). The bundled default logo is Tux.</sub>
+
 It doesn't run a browser or a background daemon. A small Python program renders a PNG
 once a minute and hands it to your existing wallpaper mechanism, then exits — so it's
 effectively free on battery.
 
 ```
-systemd timer (*:*:00) ─▶ greyline (≈100 ms, then exits)
+systemd timer (*:*:00) ─▶ greyline (renders in well under a second, then exits)
       render per output (Pillow): map + clocks + terminator
       └─▶ set wallpaper via the detected backend (sway/swww/hyprpaper/feh)
 ```
@@ -79,7 +84,12 @@ nix run github:cothinking-dev/greyline -- --out wt.png --res 2560x1440   # write
 pipx install git+https://github.com/cothinking-dev/greyline   # dep: Pillow only
 mkdir -p ~/.config/greyline
 # edit ~/.config/greyline/config.toml (copy worldtime/default-config.toml)
-systemctl --user enable --now greyline.timer                  # units in systemd/
+
+# pip doesn't ship the systemd user units — grab them from the repo:
+git clone https://github.com/cothinking-dev/greyline
+install -Dm644 greyline/systemd/greyline.{service,timer} -t ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now greyline.timer
 ```
 
 ## Configuration

@@ -49,6 +49,7 @@
         default = {
           type = "app";
           program = "${self.packages.${s}.default}/bin/greyline";
+          meta.description = "Render/apply the greyline world-time wallpaper";
         };
       });
 
