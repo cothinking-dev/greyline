@@ -3,6 +3,7 @@
 # (top-level keys override; a user [[city]] list replaces this one entirely).
 
 backend = "auto"            # auto | sway | swww | hyprpaper | gnome | x11 (feh/xwallpaper)
+# GNOME uses one shared 1920x1080 render and lets the desktop scale it.
 map_style = "vector"        # vector (scalable, themeable) | raster (needs your own map art, see NOTICE)
 theme = "dark"              # dark | blue
 format = "24h"              # 24h | 12h

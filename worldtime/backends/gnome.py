@@ -24,6 +24,8 @@ def available():
 
 
 def outputs():
+    # GNOME scales one shared background rather than exposing output geometry.
+    # Alternate paths because replacing an image at the same URI may be cached.
     return [{
         "name": f"gnome-{int(time.time() // 60) % 2}",
         "width": 1920,

@@ -137,6 +137,7 @@ in
       };
       Service = {
         Type = "oneshot";
+        # glib provides gsettings for the GNOME backend.
         Environment = [
           "PATH=${lib.makeBinPath (cfg.extraPackages ++ [ pkgs.fontconfig pkgs.glib ])}:/run/current-system/sw/bin"
         ];
