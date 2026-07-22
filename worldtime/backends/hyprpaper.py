@@ -29,10 +29,15 @@ def outputs():
 
 
 def apply(name, png_path):
+    # These commands are deprecated.
+    # Check https://wiki.hypr.land/Hypr-Ecosystem/hyprpaper/#ipc
+
     # Preload the new image, then bind it; unload others to avoid leaking memory.
-    subprocess.run(["hyprctl", "hyprpaper", "preload", png_path],
+    # subprocess.run(["hyprctl", "hyprpaper", "preload", png_path],
+    #                capture_output=True, text=True, check=True)
+    
+    subprocess.run(["hyprctl", "hyprpaper", "wallpaper", f"{name},{png_path},cover"],
                    capture_output=True, text=True, check=True)
-    subprocess.run(["hyprctl", "hyprpaper", "wallpaper", f"{name},{png_path}"],
-                   capture_output=True, text=True, check=True)
-    subprocess.run(["hyprctl", "hyprpaper", "unload", "unused"],
-                   capture_output=True, text=True)
+
+    # subprocess.run(["hyprctl", "hyprpaper", "unload", "unused"],
+    #                capture_output=True, text=True)
