@@ -189,6 +189,9 @@ On desktops that manage their own wallpaper, `greyline init` configures the gene
 backend automatically: greyline renders a PNG and runs a command to set it as your wallpaper,
 with `{path}` (the PNG) and `{output}` substituted.
 
+greyline is **not** a live-wallpaper engine, so you don't need `swww`/`awww` or any wallpaper
+daemon on GNOME — it sets a static image through the desktop's own tool (`gsettings` on GNOME).
+
 > **Note:** this **replaces** your desktop wallpaper; it is not an overlay. greyline re-renders
 > and re-sets it each minute; the last image stays after greyline stops.
 

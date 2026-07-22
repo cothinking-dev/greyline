@@ -78,6 +78,33 @@ def test_init_uses_command_recipe_for_gnome(monkeypatch, tmp_path):
     assert c["command"] == recipes.RECIPES["gnome"]
 
 
+def test_init_prefers_de_recipe_over_x11_fallback(monkeypatch, tmp_path):
+    # Regression: on a full DE (GNOME/KDE/XFCE) that draws its own wallpaper, the
+    # generic x11 root-window backend is silently overpainted by the compositor. If
+    # feh/xwallpaper is installed, backends.detect() returns "x11" — but init must
+    # still pick the DE's gsettings/xfconf/plasma recipe, not x11.
+    cfg_path = tmp_path / "config.toml"
+    monkeypatch.setattr(cli.backends, "detect", lambda: "x11")
+    monkeypatch.setattr(cli.recipes, "detect_desktop", lambda: "gnome")
+    monkeypatch.setattr(cli.service, "systemd_user_available", lambda: False)
+    rc = cli.main(["--config", str(cfg_path), "init"])
+    assert rc == 0
+    c = config.load(str(cfg_path))
+    assert c["backend"] == "command"
+    assert c["command"] == recipes.RECIPES["gnome"]
+
+
+def test_init_keeps_x11_when_not_a_desktop_environment(monkeypatch, tmp_path):
+    # A bare X11 window manager (no gnome/kde/xfce token) must still get the x11 backend.
+    cfg_path = tmp_path / "config.toml"
+    monkeypatch.setattr(cli.backends, "detect", lambda: "x11")
+    monkeypatch.setattr(cli.recipes, "detect_desktop", lambda: None)
+    monkeypatch.setattr(cli.service, "systemd_user_available", lambda: False)
+    rc = cli.main(["--config", str(cfg_path), "init"])
+    assert rc == 0
+    assert config.load(str(cfg_path))["backend"] == "x11"
+
+
 def test_init_dry_run_writes_nothing(monkeypatch, tmp_path):
     cfg_path = tmp_path / "config.toml"
     monkeypatch.setattr(cli.backends, "detect", lambda: "sway")

@@ -3,6 +3,7 @@ result-*
 __pycache__/
 *.py[cod]
 .direnv/
+.pytest_cache/
 dist/
 build/
 *.egg-info/

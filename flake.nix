@@ -17,7 +17,7 @@
         pkgs:
         pkgs.python3Packages.buildPythonApplication {
           pname = "greyline";
-          version = "0.4.1";
+          version = "0.4.2";
           pyproject = true;
           src = ./.;
           build-system = [ pkgs.python3Packages.setuptools ];
@@ -44,9 +44,23 @@
         };
     in
     {
-      packages = forAll (s: {
-        default = mkPackage (pkgsFor s);
-      });
+      packages = forAll (
+        s:
+        let
+          pkgs = pkgsFor s;
+          greyline = mkPackage pkgs;
+        in
+        {
+          # `.tests.gnome` is an on-demand GNOME VM regression test (see
+          # nix/gnome-vm-test.nix). It lives in passthru, not `checks`, so
+          # `nix flake check`/CI never boot a GNOME VM. Run: nix build .#default.tests.gnome
+          default = greyline.overrideAttrs (old: {
+            passthru = (old.passthru or { }) // {
+              tests.gnome = import ./nix/gnome-vm-test.nix { inherit pkgs greyline; };
+            };
+          });
+        }
+      );
 
       apps = forAll (s: {
         default = {

@@ -4,6 +4,15 @@ All notable changes to greyline are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] — 2026-07-22
+
+### Fixed
+- **`greyline init` no longer picks the `x11` backend on GNOME/KDE/XFCE when `feh`/`xwallpaper`
+  is installed.** Those desktops draw their own wallpaper, so the X11 root-window image is
+  silently overpainted by the compositor. `init` now prefers the desktop's own wallpaper
+  command (`gsettings`/`plasma-apply-wallpaperimage`/`xfconf-query`) over the generic `x11`
+  fallback; real wlroots compositors (sway/swww/hyprpaper) are unaffected.
+
 ## [0.4.1] — 2026-07-22
 
 ### Fixed

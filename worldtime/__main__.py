@@ -113,18 +113,21 @@ def cmd_init(args):
     exists = os.path.isfile(cfg_path)
 
     detected = backends.detect()
-    deskey = None
-    if detected:
+    deskey = recipes.detect_desktop()
+    # A full desktop environment (GNOME/KDE/XFCE) paints its own wallpaper, so the
+    # generic x11 root-window backend is silently overpainted there even when feh/
+    # xwallpaper happens to be installed. Prefer the DE's own wallpaper command over
+    # the x11 fallback. Real wlroots compositors (sway/swww/hyprpaper) still win —
+    # their sessions carry no gnome/kde/xfce token in $XDG_CURRENT_DESKTOP.
+    if detected and not (detected == "x11" and deskey):
         backend, command = detected, None
         backend_line = f"backend = {detected}  (detected)"
+    elif deskey:
+        backend, command = "command", recipes.RECIPES[deskey]
+        backend_line = f"backend = command  ({deskey} recipe)"
     else:
-        deskey = recipes.detect_desktop()
-        if deskey:
-            backend, command = "command", recipes.RECIPES[deskey]
-            backend_line = f"backend = command  ({deskey} recipe)"
-        else:
-            backend, command = None, None
-            backend_line = "backend = (none detected — set one manually)"
+        backend, command = None, None
+        backend_line = "backend = (none detected — set one manually)"
 
     use_systemd = service.systemd_user_available()
 
