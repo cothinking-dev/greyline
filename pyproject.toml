@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "greyline"
-version = "0.3.0"
+version = "0.4.0"
 description = "A live, multi-timezone world-time desktop wallpaper for Wayland/X11."
 readme = "README.md"
 requires-python = ">=3.11"          # tomllib + zoneinfo (stdlib)

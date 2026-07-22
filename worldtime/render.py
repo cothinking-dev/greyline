@@ -248,7 +248,8 @@ def _mono_logo(img, rgb):
     return out
 
 
-def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_invert=False):
+def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_invert=False,
+               logo_scale=1.0):
     """Composite the logo, pinned to the bottom-left CORNER of the wallpaper (anchored to
     the canvas, independent of the map framing). Returns its bbox or None.
 
@@ -262,7 +263,10 @@ def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_inv
         logo = Image.open(logo_path).convert("RGBA")
     except OSError:
         return None
-    target_w = max(72, round(canvas.width * 0.104))  # ~13% width, scaled down 20%
+    # ~10% of canvas width by default; logo_scale lets you size it up/down. A wide
+    # wordmark stays short at this width; a square logo (e.g. Tux) reads larger, so
+    # logo_scale < 1 is handy there.
+    target_w = max(24, round(canvas.width * 0.104 * logo_scale))
     target_h = round(target_w * logo.height / logo.width)
     logo = logo.resize((target_w, target_h), Image.LANCZOS)
     mono = _hex(logo_color)
@@ -354,6 +358,7 @@ def render(
     logo_path=None,
     logo_color=None,
     logo_invert=False,
+    logo_scale=1.0,
     bar_height=0,
     desaturate=False,
     font_path=None,
@@ -427,7 +432,8 @@ def render(
     # Logo first — its box becomes an obstacle so no label hides behind it.
     obstacles = []
     if logo:
-        b = _draw_logo(canvas, th, logo_path, bar_height, logo_color, logo_invert)
+        b = _draw_logo(canvas, th, logo_path, bar_height, logo_color, logo_invert,
+                       logo_scale)
         if b:
             obstacles.append(b)
 

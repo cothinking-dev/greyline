@@ -18,6 +18,7 @@ format = "24h"              # 24h | 12h
 logo = true                 # draw the bottom-left corner logo (bundled default: Tux)
 # logo_path = "/path/to/your/logo.png"   # swap in your own logo (PNG with transparency)
 # logo_invert = false        # recolour a dark logo's near-black pixels to light (for dark logos)
+# logo_scale = 1.0           # size the corner logo (e.g. 0.5 = half; square logos like Tux read large)
 bar_height = 0              # px reserved at the bottom for a status bar (lifts the logo)
 
 [twilight]

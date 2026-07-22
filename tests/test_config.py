@@ -35,4 +35,5 @@ def test_render_kwargs_shape():
     cfg = config.load(path="/nonexistent/config.toml")
     rkw = config.render_kwargs(cfg)
     assert rkw["theme"] and rkw["fmt"] in ("24h", "12h")
+    assert rkw["logo_scale"] == 1.0  # default logo sizing
     assert "show_date" not in rkw  # dropped feature must not leak back in

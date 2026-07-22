@@ -17,7 +17,7 @@
         pkgs:
         pkgs.python3Packages.buildPythonApplication {
           pname = "greyline";
-          version = "0.3.0";
+          version = "0.4.0";
           pyproject = true;
           src = ./.;
           build-system = [ pkgs.python3Packages.setuptools ];

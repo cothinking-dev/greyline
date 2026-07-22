@@ -25,3 +25,14 @@ def test_render_returns_rgb_at_size(style):
 def test_unknown_theme_falls_back():
     img = render.render(CITIES, dt=DT, out_size=(320, 200), theme="does-not-exist")
     assert img.size == (320, 200)
+
+
+def test_logo_scale_shrinks_the_logo():
+    from PIL import Image
+    th = render.THEMES["dark"]
+    full = render._draw_logo(Image.new("RGBA", (1000, 600)), th, render.LOGO_PNG,
+                             logo_scale=1.0)
+    half = render._draw_logo(Image.new("RGBA", (1000, 600)), th, render.LOGO_PNG,
+                             logo_scale=0.5)
+    w_full, w_half = full[2] - full[0], half[2] - half[0]
+    assert w_half < w_full and abs(w_half - w_full / 2) <= 2

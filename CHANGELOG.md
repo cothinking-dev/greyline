@@ -4,6 +4,16 @@ All notable changes to greyline are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-07-22
+
+### Added
+- **`logo_scale`** config option — size the corner logo up or down (e.g. `0.5` for half).
+  Square logos like the default Tux read large at the default size; `logo_scale` tames them.
+
+### Changed
+- Refreshed the README screenshots (smaller, tasteful logo) and reorganised the README with a
+  table of contents, a **Requirements** section, and a "How it works" diagram.
+
 ## [0.3.0] — 2026-07-22
 
 ### Added
@@ -53,6 +63,7 @@ All notable changes to greyline are documented here. The format is based on
 - Backends: `sway`, `swww`, `hyprpaper`, `x11` (feh/xwallpaper), auto-detected.
 - Nix flake + home-manager module; systemd user timer for once-a-minute rendering.
 
+[0.4.0]: https://github.com/cothinking-dev/greyline/releases/tag/v0.4.0
 [0.3.0]: https://github.com/cothinking-dev/greyline/releases/tag/v0.3.0
 [0.2.0]: https://github.com/cothinking-dev/greyline/releases/tag/v0.2.0
 [0.1.0]: https://github.com/cothinking-dev/greyline/releases/tag/v0.1.0
