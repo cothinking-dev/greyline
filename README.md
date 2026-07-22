@@ -60,8 +60,9 @@ a minute and hands it to your existing wallpaper mechanism, then exits.
 
 ## Requirements
 
-- **OS:** Linux, **Wayland or X11**. (Not macOS or Windows; greyline drives a Linux desktop's
-  wallpaper mechanism, it doesn't own the screen.) Architectures: `x86_64` and `aarch64`.
+- **OS:** Linux, **Wayland or X11** (the supported, tested target). Architectures: `x86_64`
+  and `aarch64`. **Windows and macOS have beta, untested support** — see
+  [Windows & macOS (beta)](#windows--macos-beta).
 - **Python ≥ 3.11**, only when installing via pip/pipx/uv (the Nix package bundles its own).
 - **Runtime dependencies:** [Pillow](https://python-pillow.org/) and
   [tomlkit](https://github.com/sdispater/tomlkit), installed automatically; plus **fontconfig**
@@ -134,6 +135,51 @@ services.greyline = {
 nix run github:cothinking-dev/greyline -- --out wt.png --res 2560x1440   # writes a PNG
 uvx greyline --out wt.png --res 2560x1440                                # same, via PyPI
 ```
+
+### Windows & macOS (beta)
+
+> [!WARNING]
+> **Beta and untested on real hardware.** greyline is developed and tested on Linux. The
+> Windows and macOS backends are written against each platform's documented wallpaper API
+> but have **not been run on an actual Windows or Mac desktop** — only in CI (which renders
+> the image and exercises the code, but cannot verify the wallpaper visibly changes, since
+> CI runners are headless). The rendering itself is the same well-tested pure-Python/Pillow
+> code as on Linux. **Please [open an issue](https://github.com/cothinking-dev/greyline/issues)
+> to report whether it works** — success or failure both help.
+>
+> Known limitations: **single combined desktop only** (no per-monitor wallpapers yet), and
+> **no automatic scheduling** — you run the update loop yourself (see below).
+
+**Install** (Python ≥ 3.11; [Pillow](https://python-pillow.org/) ships wheels for both OSes):
+
+```sh
+pipx install greyline      # or: pip install greyline
+```
+
+**Run** — greyline auto-detects the `windows` / `macos` backend. Update once, or loop:
+
+```sh
+greyline --list-outputs    # sanity-check detection
+greyline                   # render + set the wallpaper once
+greyline watch             # keep it updating (foreground; Ctrl-C to stop)
+```
+
+You can also force the backend explicitly with `--backend windows` / `--backend macos`, or
+set `backend = "windows"` / `"macos"` in the config file.
+
+**Keep it running in the background** — there's no native service installer on these
+platforms yet, so wrap `greyline watch` in the OS scheduler:
+
+- **Windows** — Task Scheduler → *Create Task* → trigger *At log on* → action
+  *Start a program*: `greyline` with argument `watch`. (Or drop a shortcut to
+  `greyline watch` in `shell:startup`.)
+- **macOS** — a `~/Library/LaunchAgents/ing.cothink.greyline.plist` launchd agent whose
+  `ProgramArguments` are the path to `greyline` and `watch`, with `RunAtLoad` set; load it
+  with `launchctl load ~/Library/LaunchAgents/ing.cothink.greyline.plist`.
+
+**Fonts:** greyline uses fontconfig (`fc-match`) on Linux; on Windows/macOS Pillow resolves a
+system font automatically (Segoe UI / Helvetica), falling back to a built-in font — so labels
+always render, though exact typography may differ from Linux.
 
 ## Usage
 

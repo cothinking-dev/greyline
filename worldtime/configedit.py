@@ -21,7 +21,7 @@ _ENUMS = {
     "theme": {"dark", "blue"},
     "format": {"24h", "12h"},
     "map_style": {"vector", "raster"},
-    "backend": {"auto", "sway", "swww", "hyprpaper", "x11", "command"},
+    "backend": {"auto", "sway", "swww", "hyprpaper", "x11", "windows", "macos", "command"},
     "twilight.darkness": {"subtle", "medium", "dramatic"},
 }
 

@@ -17,3 +17,28 @@ jobs:
       # Builds the package; doCheck = true runs the pytest suite in the check phase.
       - run: nix build .#default --print-build-logs
       - run: nix flake check --print-build-logs
+
+  # Cross-platform smoke test for the beta Windows/macOS support. Proves the pure-Pillow
+  # render core runs on real Win/Mac (incl. Pillow's OS font-dir search) and exercises the
+  # backend command-construction via the mocked unit tests. It does NOT set a real
+  # wallpaper — GitHub runners are headless, so the actual desktop-paint step stays
+  # untested (see the README "Windows & macOS (beta, untested)" section).
+  cross-platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ".[test]"
+      # Backend unit tests (mocked syscalls) + the rest of the suite.
+      - run: pytest tests/ -q
+      # Headless render smoke test: a bare OS has no fontconfig, so font_path=None —
+      # the render must still produce a non-empty PNG (script exits non-zero on failure).
+      - name: Render smoke test
+        run: python tests/smoke_render.py

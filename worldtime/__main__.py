@@ -307,7 +307,7 @@ def build_parser():
     p.add_argument("--config", default=None,
                    help="path to config.toml (default: XDG location)")
     p.add_argument("--backend", default=None,
-                   help="override backend: sway|swww|hyprpaper|x11|command")
+                   help="override backend: sway|swww|hyprpaper|x11|windows|macos|command")
     p.add_argument("--command", default=None,
                    help="for --backend command: shell command run per output with "
                         "{path} (and {output}) substituted")

@@ -69,13 +69,19 @@ THEMES = {
 }
 
 # Font candidates (Aporetic preferred per the repo; DejaVu as the portable fallback).
+# The Windows (segoe/arial) and macOS (Helvetica/SFNS) names are found by Pillow's
+# own OS-font-dir search; if none resolve, _load_font falls back to load_default().
 FONT_CANDIDATES = [
     "Aporetic Sans", "AporeticSans", "Aporetic-Sans",
     "DejaVuSans.ttf", "DejaVu Sans",
+    "segoeui.ttf", "arial.ttf",          # Windows
+    "Helvetica.ttc", "SFNS.ttf", "Arial.ttf",  # macOS
 ]
 FONT_BOLD_CANDIDATES = [
     "Aporetic Sans Bold", "AporeticSans-Bold",
     "DejaVuSans-Bold.ttf", "DejaVu Sans Bold",
+    "segoeuib.ttf", "arialbd.ttf",       # Windows
+    "Helvetica.ttc", "SFNS.ttf", "Arial Bold.ttf",  # macOS
 ]
 
 
