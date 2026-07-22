@@ -23,8 +23,7 @@ The bundled default logo is Tux.</sub>
 browser (your timezone highlighted), no install needed.
 
 greyline doesn't run a browser or a background daemon. A small Python program renders a PNG once
-a minute and hands it to your existing wallpaper mechanism, then exits. It should be light on performance & battery usages
-*(greyline = the ham-radio term for the day/night terminator.)*
+a minute and hands it to your existing wallpaper mechanism, then exits.
 
 ## Table of Contents
 
