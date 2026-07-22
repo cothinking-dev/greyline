@@ -104,6 +104,7 @@ def render_kwargs(cfg):
         "logo_color": cfg.get("logo_color"),  # hex → flat-colour (e.g. all-white) logo
         "logo_invert": bool(cfg.get("logo_invert", False)),  # recolour dark pixels to light
         "logo_scale": float(cfg.get("logo_scale", 1.0)),  # size the corner logo (1.0 = default)
+        "logo_max_height": float(cfg.get("logo_max_height", 0.0)),  # cap logo height (fraction of screen; 0 = uncapped)
         "bar_height": int(cfg.get("bar_height", 0)),  # px reserved at bottom for a status bar
         "desaturate": bool(cfg.get("desaturate", False)),  # grayscale the raster map
     }

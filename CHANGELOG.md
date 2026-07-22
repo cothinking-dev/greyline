@@ -4,6 +4,19 @@ All notable changes to greyline are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] — 2026-07-22
+
+### Added
+- **Configurable label font via `font_family`.** Set the label font in `config.toml` (a
+  fontconfig family name or a direct font-file path) instead of only via `--font-family`;
+  the CLI flag still overrides the config for a single run. Unset falls back to the bundled
+  Aporetic Sans, then system fonts.
+- **`logo_max_height` config key.** Caps the corner logo's height to a fraction of the
+  screen height (`0` = no cap), so tall/portrait custom logos no longer blow up at the
+  fixed logo width. Aspect ratio is preserved.
+- **Documented `font_scale`.** The existing text-size multiplier is now surfaced in the
+  default config template (e.g. `font_scale = 1.25` for 25% larger labels).
+
 ## [0.5.1] — 2026-07-22
 
 ### Fixed

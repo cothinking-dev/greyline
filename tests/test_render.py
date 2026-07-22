@@ -46,3 +46,23 @@ def test_logo_scale_shrinks_the_logo():
                              logo_scale=0.5)
     w_full, w_half = full[2] - full[0], half[2] - half[0]
     assert w_half < w_full and abs(w_half - w_full / 2) <= 2
+
+
+def test_logo_max_height_caps_tall_logos(tmp_path):
+    from PIL import Image
+    th = render.THEMES["dark"]
+    canvas = (1000, 600)
+    # A tall/portrait logo would otherwise blow up: at the fixed ~10.4% width its
+    # aspect-derived height dwarfs the canvas. The cap bounds it (and keeps aspect).
+    tall = tmp_path / "tall.png"
+    Image.new("RGBA", (100, 1000), (255, 0, 0, 255)).save(tall)
+
+    uncapped = render._draw_logo(Image.new("RGBA", canvas), th, str(tall))
+    capped = render._draw_logo(Image.new("RGBA", canvas), th, str(tall),
+                               logo_max_height=0.5)
+    h_uncapped = uncapped[3] - uncapped[1]
+    h_capped = capped[3] - capped[1]
+    assert h_capped <= 600 * 0.5 + 1 < h_uncapped
+    # Aspect ratio preserved after capping (tall source stays 1:10).
+    w_capped = capped[2] - capped[0]
+    assert abs(w_capped - h_capped / 10) <= 1

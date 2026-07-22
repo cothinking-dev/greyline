@@ -48,8 +48,15 @@ def run_apply(args):
     rkw = config.render_kwargs(cfg)
     cities = cfg.get("city", [])
 
-    font = _resolve_font(args.font_family)
-    font_bold = _resolve_font(args.font_family, bold=True)
+    # Font family: CLI flag > config `font_family` > built-in default. Accept either a
+    # fontconfig family name or a direct font-file path (fc-match treats its arg as a
+    # family pattern, so a bare path would resolve wrong — route paths straight to Pillow).
+    family = args.font_family or cfg.get("font_family") or "Aporetic Sans"
+    if os.path.isfile(family):
+        font = font_bold = family
+    else:
+        font = _resolve_font(family) or family
+        font_bold = _resolve_font(family, bold=True) or family
 
     # Single-image mode (testing / non-backend use).
     if args.out:
@@ -314,8 +321,9 @@ def build_parser():
     p.add_argument("--out", default=None,
                    help="write a single PNG here instead of applying")
     p.add_argument("--res", default=None, help="force resolution WxH (for --out)")
-    p.add_argument("--font-family", default="Aporetic Sans",
-                   help="label font family (resolved via fontconfig)")
+    p.add_argument("--font-family", default=None,
+                   help="label font family or font-file path (overrides config "
+                        "`font_family`; resolved via fontconfig)")
     p.add_argument("--list-outputs", action="store_true",
                    help="print detected outputs and exit")
 

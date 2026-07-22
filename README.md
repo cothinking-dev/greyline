@@ -177,9 +177,11 @@ platforms yet, so wrap `greyline watch` in the OS scheduler:
   `ProgramArguments` are the path to `greyline` and `watch`, with `RunAtLoad` set; load it
   with `launchctl load ~/Library/LaunchAgents/ing.cothink.greyline.plist`.
 
-**Fonts:** greyline uses fontconfig (`fc-match`) on Linux; on Windows/macOS Pillow resolves a
-system font automatically (Segoe UI / Helvetica), falling back to a built-in font — so labels
-always render, though exact typography may differ from Linux.
+**Fonts:** set `font_family` in the config (a fontconfig family name like `"DejaVu Sans"`, or a
+direct font-file path) and `font_scale` to size the label text; `--font-family` overrides the
+config for one run. greyline uses fontconfig (`fc-match`) on Linux; on Windows/macOS Pillow
+resolves a system font automatically (Segoe UI / Helvetica), falling back to a built-in font —
+so labels always render, though exact typography may differ from Linux.
 
 ## Usage
 
@@ -224,7 +226,8 @@ template. Keys:
 | `command`, `resolution` | for the `command` backend (see below) |
 | `map_style` | `vector` (default) / `raster` (bring your own art) |
 | `theme`, `format` | `dark`/`blue` · `24h`/`12h` |
-| `logo`, `logo_path`, `logo_invert` | corner logo (default: Tux) |
+| `font_family`, `font_scale` | label font (family name or file path) · text-size multiplier |
+| `logo`, `logo_path`, `logo_invert`, `logo_scale`, `logo_max_height` | corner logo (default: Tux); `logo_max_height` caps height as a fraction of screen height |
 | `[twilight]` | `bands`, `darkness` (`subtle`/`medium`/`dramatic`) |
 | `[home]` | `tz` (`auto` or IANA), `column_highlight`, `color` |
 | `[[city]]` | `name`, `lat`, `lon`, `tz`, optional `label_side` |

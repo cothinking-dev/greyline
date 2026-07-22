@@ -266,7 +266,7 @@ def _mono_logo(img, rgb):
 
 
 def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_invert=False,
-               logo_scale=1.0):
+               logo_scale=1.0, logo_max_height=0.0):
     """Composite the logo, pinned to the bottom-left CORNER of the wallpaper (anchored to
     the canvas, independent of the map framing). Returns its bbox or None.
 
@@ -275,6 +275,8 @@ def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_inv
     `logo_invert` recolours the near-black pixels to light while keeping other colours —
     handy for a dark wordmark on a dark theme; off by default so colour logos (e.g. Tux)
     composite as-is.
+    `logo_max_height` caps the drawn height to that fraction of the canvas height (0 = no
+    cap); useful for tall/portrait logos that would otherwise blow up at the fixed width.
     """
     try:
         logo = Image.open(logo_path).convert("RGBA")
@@ -285,6 +287,10 @@ def _draw_logo(canvas, theme, logo_path, bar_height=0, logo_color=None, logo_inv
     # logo_scale < 1 is handy there.
     target_w = max(24, round(canvas.width * 0.104 * logo_scale))
     target_h = round(target_w * logo.height / logo.width)
+    # Cap the height for tall logos, recomputing width to keep the aspect ratio.
+    if logo_max_height and target_h > canvas.height * logo_max_height:
+        target_h = round(canvas.height * logo_max_height)
+        target_w = max(1, round(target_h * logo.width / logo.height))
     logo = logo.resize((target_w, target_h), Image.LANCZOS)
     mono = _hex(logo_color)
     if mono:
@@ -376,6 +382,7 @@ def render(
     logo_color=None,
     logo_invert=False,
     logo_scale=1.0,
+    logo_max_height=0.0,
     bar_height=0,
     desaturate=False,
     font_path=None,
@@ -450,7 +457,7 @@ def render(
     obstacles = []
     if logo:
         b = _draw_logo(canvas, th, logo_path, bar_height, logo_color, logo_invert,
-                       logo_scale)
+                       logo_scale, logo_max_height)
         if b:
             obstacles.append(b)
 

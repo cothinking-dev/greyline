@@ -36,4 +36,5 @@ def test_render_kwargs_shape():
     rkw = config.render_kwargs(cfg)
     assert rkw["theme"] and rkw["fmt"] in ("24h", "12h")
     assert rkw["logo_scale"] == 1.0  # default logo sizing
+    assert rkw["logo_max_height"] == 0.0  # uncapped by default
     assert "show_date" not in rkw  # dropped feature must not leak back in
