@@ -4,6 +4,22 @@ All notable changes to greyline are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] — 2026-07-23
+
+### Fixed
+- **KDE Plasma wallpaper now refreshes on every tick (`command` backend).** Plasma caches
+  the wallpaper by path, so greyline's fixed filename never repainted. The command backend
+  now ping-pongs two buffers (`screen-a.png`/`screen-b.png`) so each update hands Plasma a
+  new path — capped at two files, no cache or junk-file growth. Native backends keep the
+  single stable filename. (#11)
+- **systemd timer fires within ~1s of the minute.** Added `AccuracySec=1s` so the clock
+  updates on time instead of drifting up to ~50s from systemd's default timer coalescing.
+  A single per-minute timer at 1s accuracy has negligible power cost. (#12)
+
+### Added
+- **Principles (north star) section in the README** — universal compatibility, performance
+  & battery life, and staying lightweight, as a checklist for future changes.
+
 ## [0.5.2] — 2026-07-22
 
 ### Added

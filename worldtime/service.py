@@ -38,6 +38,8 @@ Description=Update the greyline world-time wallpaper on a schedule
 
 [Timer]
 OnCalendar={interval}
+# Fire within 1s of :00 — a visible clock can't drift; one timer/min = negligible power.
+AccuracySec=1s
 Persistent=true
 
 [Install]

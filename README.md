@@ -33,6 +33,7 @@ a minute and hands it to your existing wallpaper mechanism, then exits.
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [How it works](#how-it-works)
+- [Principles (north star)](#principles-north-star)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -284,6 +285,23 @@ flowchart LR
 - **`render.py`** — composites map + overlays, then draws clocks at native resolution with smart
   label placement (labels pick a side to avoid overlapping each other and the edges).
 - **`backends/`** — the only platform-specific code; everything else is portable.
+
+## Principles (north star)
+
+greyline optimises for **universal compatibility**, **performance & battery life**, and staying
+**lightweight** — in that order. These guide every change (see the
+[Road to v1](https://github.com/cothinking-dev/greyline/issues/10) tracker):
+
+- **No daemon; render once and exit.** A tick renders a PNG, hands it to your existing wallpaper
+  mechanism, and the process ends — nothing stays resident.
+- **Real-time updates and animations are deliberately out of scope.** A clock to the minute is the
+  contract; per-second redraws would burn battery for no real gain.
+- **No unbounded files or caches.** Artifacts are bounded and self-managing — e.g. the KDE refresh
+  fix ping-pongs *two* fixed buffers rather than writing a new timestamped file each minute.
+- **Solve desktop quirks at the edge.** Prefer a recipe/command tweak (e.g. GNOME's empty-then-set)
+  or a bounded mechanism over a background service or a growing pile of workaround state.
+
+When in doubt, a change should make greyline *lighter*, not heavier.
 
 ## Contributing
 

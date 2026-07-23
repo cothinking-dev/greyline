@@ -33,6 +33,26 @@ def _runtime_dir():
     return d
 
 
+def _output_path(rt, name, rotate):
+    """PNG path for one output. Normally the stable ``{name}.png``.
+
+    When ``rotate`` (the command backend, whose DE may cache the wallpaper by path — e.g.
+    KDE's ``plasma-apply-wallpaperimage`` won't refresh on an unchanged filename, #11),
+    ping-pong between ``{name}-a.png``/``{name}-b.png`` so each tick hands the DE a *new*
+    path and it actually repaints. Capped at 2 files/output — no junk accumulation, unlike
+    a per-tick timestamped file. Stateless across the fresh-process-per-tick model: write
+    to whichever buffer is missing/older by mtime; the newest stays displayed until we swap.
+    Native backends (sway/swww/…) read file contents live, so they keep the single name.
+    """
+    if not rotate:
+        return os.path.join(rt, f"{name}.png")
+    a = os.path.join(rt, f"{name}-a.png")
+    b = os.path.join(rt, f"{name}-b.png")
+    ma = os.path.getmtime(a) if os.path.exists(a) else -1.0
+    mb = os.path.getmtime(b) if os.path.exists(b) else -1.0
+    return a if ma <= mb else b
+
+
 def _parse_res(s):
     try:
         w, h = s.lower().split("x")
@@ -96,6 +116,8 @@ def run_apply(args):
         return 1
 
     rt = _runtime_dir()
+    # Only the command backend funnels through DEs that cache the wallpaper by path (#11).
+    rotate = name == "command"
     failures = 0
     for o in outs:
         # Render + apply each output independently: a single failing monitor
@@ -103,7 +125,7 @@ def run_apply(args):
         try:
             img = render.render(cities, out_size=(o["width"], o["height"]),
                                 font_path=font, font_bold_path=font_bold, **rkw)
-            path = os.path.join(rt, f"{o['name']}.png")
+            path = _output_path(rt, o["name"], rotate)
             img.save(path)
             mod.apply(o["name"], path)
         except Exception as e:  # noqa: BLE001 — keep going for the remaining outputs

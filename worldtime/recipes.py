@@ -16,6 +16,8 @@ RECIPES = {
         'gsettings set org.gnome.desktop.background picture-uri "file://{path}" && '
         'gsettings set org.gnome.desktop.background picture-uri-dark "file://{path}"'
     ),
+    # Plasma caches the wallpaper by path and won't refresh on an unchanged filename;
+    # greyline ping-pongs two buffers (see _output_path) so {path} differs each tick.
     "kde": "plasma-apply-wallpaperimage {path}",
     # The monitor segment varies by XFCE version/output name; monitor0 is the common
     # default. Users can find theirs with: xfconf-query -c xfce4-desktop -l | grep last-image

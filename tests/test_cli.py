@@ -44,6 +44,7 @@ def test_service_unit_execstart_and_timer(monkeypatch):
     assert "Type=oneshot" in svc
     tmr = service.timer_unit(interval="*:0/5:00")
     assert "OnCalendar=*:0/5:00" in tmr
+    assert "AccuracySec=1s" in tmr  # tight accuracy so the clock updates on time (#12)
     assert "WantedBy=timers.target" in tmr
 
 
@@ -53,6 +54,31 @@ def test_install_and_enable_dry_run_lists_actions_without_writing(monkeypatch, t
     assert any("daemon-reload" in a for a in actions)
     assert any("enable --now greyline.timer" in a for a in actions)
     assert not (tmp_path / "systemd").exists()  # nothing written in dry-run
+
+
+# --- command-backend ping-pong buffers (#11) ---
+
+def test_output_path_stable_for_native_backends(tmp_path):
+    # Native backends read file contents live, so they keep one stable filename.
+    assert cli._output_path(str(tmp_path), "eDP-1", rotate=False) == str(tmp_path / "eDP-1.png")
+
+
+def test_output_path_pingpongs_between_two_buffers(tmp_path):
+    import os
+    rt = str(tmp_path)
+    pa, pb = tmp_path / "screen-a.png", tmp_path / "screen-b.png"
+
+    # Tick 1: neither buffer exists -> pick -a.
+    assert cli._output_path(rt, "screen", rotate=True) == str(pa)
+    pa.write_bytes(b"1"); os.utime(pa, (1000, 1000))
+
+    # Tick 2: -a is newest -> hand the DE the *other* path (-b) so it refreshes.
+    assert cli._output_path(rt, "screen", rotate=True) == str(pb)
+    pb.write_bytes(b"2"); os.utime(pb, (2000, 2000))
+
+    # Tick 3: -a is now older -> swap back. Bounded to 2 files: no accumulation.
+    assert cli._output_path(rt, "screen", rotate=True) == str(pa)
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["screen-a.png", "screen-b.png"]
 
 
 # --- init ---
