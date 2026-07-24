@@ -4,6 +4,16 @@ All notable changes to greyline are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] — 2026-07-24
+
+### Fixed
+- **Home-manager `command` backend no longer breaks with a space-containing `fontFamily`.**
+  The `ExecStart` line fused `--font-family "Aporetic Sans"` and `--command …` with no space,
+  because Nix strips the leading whitespace from an indented (`''…''`) string fragment. greyline
+  then rejected the concatenated argument (`status=2/INVALIDARGUMENT`) and the wallpaper failed
+  to render every tick. The `--command` fragment is now a normal double-quoted string, so the
+  separator survives. (#13)
+
 ## [0.5.3] — 2026-07-23
 
 ### Fixed

@@ -156,7 +156,7 @@ in
           "PATH=${lib.makeBinPath (cfg.extraPackages ++ [ pkgs.fontconfig ])}:/run/current-system/sw/bin"
         ];
         ExecStart = ''${cfg.package}/bin/greyline --backend ${cfg.backend} --font-family "${cfg.fontFamily}"''
-          + lib.optionalString (cfg.command != "") '' --command ${lib.escapeShellArg cfg.command}'';
+          + lib.optionalString (cfg.command != "") " --command ${lib.escapeShellArg cfg.command}";
       };
       Install.WantedBy = [ cfg.target ];
     };
